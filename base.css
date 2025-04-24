@@ -22,6 +22,7 @@ svg {
   width: 100%;
   height: 100vh;
   display: flex;
+  /* overflow: hidden; */
 }
 
 aside {
@@ -31,13 +32,14 @@ aside {
   flex-direction: column;
   gap: 20px;
   transition: width 0.3s ease, padding 0.3s ease;
+  border-right: 1px solid gray;
 }
 
 aside.closed {
-  display: flex;
-  align-items: center;
   padding: 8px;
   width: 40px;
+  display: flex;
+  align-items: center;
 }
 
 .sidebar-header {
@@ -57,15 +59,15 @@ aside.closed {
   color: white;
   padding: 12px;
   width: 100%;
-  background-color: #635FC7;
+  background-color: #635fc7;
   border-radius: 8px;
 }
 
 .sidebar-content .btn-create-project {
-  color: #635FC7;
+  color: #635fc7;
   font-weight: 600;
   background-color: white;
-  border: 1px solid #635FC7;
+  border: 1px solid #635fc7;
 }
 
 main {
@@ -80,13 +82,13 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-left: 1px solid gray;
+  border-bottom: 1px solid gray;
 }
 
 nav > button {
   color: white;
   padding: 12px 24px;
-  background-color: #635FC7;
+  background-color: #635fc7;
   border-radius: 32px;
 }
 
@@ -95,16 +97,50 @@ nav.nocontent {
 }
 
 .main-content {
+  padding: 32px;
   height: 100%;
-  background-color: pink;
+  background-color: #F4F7FD;
+  overflow: hidden;
+}
+
+.main-content > div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  gap: 32px;
+  overflow-x: auto;
+}
+
+.column {
+  width: 300px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.column > h4 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.tasks {
+  padding-bottom: 64px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.task-container {
+  padding: 16px;
+  border-radius: 8px;
+  background-color: white;
 }
 
 .dialog-container {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);

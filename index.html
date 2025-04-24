@@ -14,10 +14,16 @@
   </head>
   <body>
     <div id="app">
-      <create-project-dialog :is-open="createProjectDialog" @close="closeCreateProjectDialog"></create-project-dialog>
+      <create-project-dialog
+        :is-open="createProjectDialog"
+        @close="closeCreateProjectDialog"
+        @create-project="createProject"
+      >
+      </create-project-dialog>
       <sidebar
         :sidebar-open="sidebarOpen"
         :projects="projects"
+        :active-project="activeProject"
         @toggle-sidebar="toggleSidebar"
         @set-active-project="setActiveProject"
         @open-create-project-dialog="openCreateProjectDialog"
@@ -25,7 +31,7 @@
       </sidebar>
       <main>
         <navbar :active-project="activeProject"></navbar>
-        <main-content></main-content>
+        <main-content :active-project="activeProject"></main-content>
       </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>

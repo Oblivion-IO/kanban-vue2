@@ -32,16 +32,43 @@ Vue.component("create-project-dialog", {
   template: `
     <div class="dialog-container" v-if="isOpen">
       <dialog open class="project-dialog">
+
         <div class="dialog-header">
           <h2>Create New Project</h2>
           <button class="close-button" @click="closeDialog">×</button>
         </div>
+
+        <div class="dialog-content">
+          <form @submit.prevent="createProject">
+            <div class="form-group">
+              <label for="project-title">Project Title</label>
+              <input type="text" id="project-title" v-model="projectTitle" placeholder="Enter project title" required>
+            </div>
+            <div class="dialog-actions">
+              <button type="button" class="btn-cancel" @click="closeDialog">Cancel</button>
+              <button type="submit" class="btn-create">Create</button>
+            </div>
+          </form>
+        </div>
+
       </dialog>
     </div>
   `,
+  data() {
+    return {
+      projectTitle: "",
+    };
+  },
   methods: {
     closeDialog() {
       this.$emit("close");
+    },
+    createProject() {
+      if (this.projectTitle.trim()) {
+        this.$emit("create-project", this.projectTitle);
+        this.projectTitle = "";
+        this.closeDialog();
+      }
     },
   },
 });
@@ -51,6 +78,9 @@ Vue.component("sidebar", {
     sidebarOpen: {
       type: Boolean,
       required: true,
+    },
+    activeProject: {
+      type: Object,
     },
     projects: {
       type: Array,
@@ -90,7 +120,6 @@ Vue.component("sidebar", {
   data() {
     return {
       title: "Kanban",
-      activeProject: null,
     };
   },
   methods: {
@@ -98,7 +127,6 @@ Vue.component("sidebar", {
       this.$emit("toggle-sidebar");
     },
     updateProject(id) {
-      this.activeProject = this.projects.find((project) => project.id == id);
       this.setActiveProject(id);
     },
     setActiveProject(id) {
@@ -127,9 +155,24 @@ Vue.component("navbar", {
 });
 
 Vue.component("main-content", {
+  props: {
+    activeProject: {
+      type: Object | null,
+    },
+  },
   template: `
     <div class="main-content">
-      this is main content
+      <div>
+        <div class="column" v-for="(status, idx) in activeProject.statuses" :key="idx">
+          <h4>{{ status.name }} ({{ status.tasks.length }})</h4>
+
+          <div class="tasks">
+            <div v-for="(task, idx) in status.tasks" :key="idx" class="task-container">
+              <h6>{{ task.title }}</h6>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   `,
 });
@@ -144,10 +187,61 @@ const app = new Vue({
       {
         id: 1,
         title: "Alifshop backend",
+        nextTaskId: 4,
+        statuses: [
+          {
+            id: 1,
+            name: "To Do",
+            tasks: [
+              {
+                id: 1,
+                title: "Write docker compose for psql",
+              },
+            ],
+          },
+          {
+            id: 2,
+            name: "Doing",
+            tasks: [
+              {
+                id: 2,
+                title: "Project architecture",
+              },
+            ],
+          },
+          {
+            id: 3,
+            name: "Done",
+            tasks: [
+              {
+                id: 3,
+                title: "Create git repository",
+              },
+            ],
+          },
+        ],
       },
       {
         id: 2,
         title: "Simple Operating System",
+        nextTaskId: 1,
+        statuses: [
+          {
+            id: 1,
+            name: "To Do",
+            tasks: [],
+          },
+          {
+            id: 2,
+            name: "Doing",
+            tasks: [],
+          },
+          {
+            id: 3,
+            name: "Done",
+            tasks: [],
+          },
+        ],
       },
     ],
     nextProjectId: 3,
@@ -164,6 +258,33 @@ const app = new Vue({
     },
     closeCreateProjectDialog() {
       this.createProjectDialog = false;
+    },
+    createProject(title) {
+      const newProject = {
+        id: this.nextProjectId,
+        title,
+        nextTaskId: 1,
+        statuses: [
+          {
+            id: 1,
+            name: "To Do",
+            tasks: [],
+          },
+          {
+            id: 2,
+            name: "Doing",
+            tasks: [],
+          },
+          {
+            id: 3,
+            name: "Done",
+            tasks: [],
+          },
+        ],
+      };
+      this.nextProjectId++;
+      this.projects.push(newProject);
+      this.setActiveProject(newProject.id);
     },
   },
 });
